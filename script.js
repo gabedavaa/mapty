@@ -179,10 +179,10 @@ class App {
           minWidth: 100,
           autoClose: false,
           closeOnClick: false,
-          className: `${type}-popup`,
+          className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent(workout.distance)
+      .setPopupContent(workout.type)
       .openPopup();
   }
 }
