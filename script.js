@@ -13,32 +13,53 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 let map, mapEvent;
 
-if (navigator.geolocation)
-  navigator.geolocation.getCurrentPosition(
-    function (position) {
-      console.log(position);
-      const { latitude } = position.coords;
-      const { longitude } = position.coords;
+class App {
+  #map;
+  #mapEvent;
+  constructor() {
+    this._getPosition();
+  }
 
-      map = L.map('map').setView([latitude, longitude], 17);
-      console.log(map);
+  _getPosition() {
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(
+        this._loadMap.bind(this),
+        function () {
+          alert('Could not get locatin');
+        }
+      );
+  }
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
+  _loadMap(position) {
+    console.log(position);
+    const { latitude } = position.coords;
+    const { longitude } = position.coords;
 
-      // Handling clicks on map
-      map.on('click', function (mapE) {
-        mapEvent = mapE;
-        form.classList.remove('hidden');
-        inputDistance.focus();
-      });
-    },
-    function () {
-      alert('Could not get locatin');
-    }
-  );
+    console.log(this);
+    this.#map = L.map('map').setView([latitude, longitude], 17);
+    console.log(map);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+
+    // Handling clicks on map
+    this.#map.on('click', function (mapE) {
+      this.#mapEvent = mapE;
+      form.classList.remove('hidden');
+      inputDistance.focus();
+    });
+  }
+
+  _showForm() {}
+
+  _toggleElevationField() {}
+
+  _newWorkout() {}
+}
+
+const app = new App();
 
 form.addEventListener('submit', function (e) {
   e.preventDefault();
