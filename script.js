@@ -328,7 +328,7 @@ class App {
     const workout = this.#workout.find(
       work => work.id === workoutElement.dataset.id
     );
-    alert('Are you sure to delet them!');
+    alert('Are you sure to delete them!');
     // // form.style.display = 'none';
     // // this.reset(workout);
     // // this._hideForm(e);
