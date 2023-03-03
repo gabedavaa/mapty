@@ -88,7 +88,11 @@ class App {
     // Attache event handlers
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
-    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+    // containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+    containerWorkouts.addEventListener(
+      'dblclick',
+      this._deletWorkOut.bind(this)
+    );
   }
 
   _getPosition() {
@@ -293,7 +297,6 @@ class App {
 
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem('workouts'));
-
     if (!data) return;
 
     this.#workout = data;
@@ -304,8 +307,44 @@ class App {
   }
 
   reset() {
-    console.log(workouts);
-    localStorage.removeItem('workouts');
+    // const workoutElement = e.target.closest('.workout');
+    // if (!workoutElement) return;
+    // const workouts = this.#workout.find(
+    //   work => work.id === workoutElement.dataset.id
+    // );
+    // console.log(workouts);
+
+    // alert('Are you sure to delet !');
+
+    localStorage.removeItem(`workouts`);
+    location.reload();
+  }
+
+  _deletWorkOut(e) {
+    e.preventDefault();
+
+    const workoutElement = e.target.closest('.workout');
+    if (!workoutElement) return;
+    const workout = this.#workout.find(
+      work => work.id === workoutElement.dataset.id
+    );
+    alert('Are you sure to delet them!');
+    // // form.style.display = 'none';
+    // // this.reset(workout);
+    // // this._hideForm(e);
+    // console.log(workout);
+
+    // // Empty inputs
+    // inputDistance.value =
+    //   inputDuration.value =
+    //   inputCadence.value =
+    //   inputElevation.value =
+    //     '';
+    // form.style.display = 'none';
+    // form.classList.add('hidden');
+    // setTimeout(() => (form.style.display = 'grid'), 1000);
+
+    localStorage.removeItem(`workouts`);
     location.reload();
   }
 }
