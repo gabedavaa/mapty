@@ -7,6 +7,7 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+const seeAllWorkOutOnMap = document.getElementById('see-workout-onmap');
 
 class workout {
   date = new Date();
@@ -92,6 +93,10 @@ class App {
     containerWorkouts.addEventListener(
       'dblclick',
       this._deletWorkOut.bind(this)
+    );
+    seeAllWorkOutOnMap.addEventListener(
+      'click',
+      this._seeAllWorkOut.bind(this)
     );
   }
 
@@ -281,7 +286,6 @@ class App {
     const workout = this.#workout.find(
       work => work.id === workoutElement.dataset.id
     );
-
     this.#map.setView(workout.coords, this.#mapZoomLevel, {
       animate: true,
       pan: { duration: 1 },
@@ -305,7 +309,31 @@ class App {
       this._renderWorkOut(work);
     });
   }
+  _seeAllWorkOut(e) {
+    e.preventDefault();
+    const latArr = [];
+    const lngArr = [];
+    const latAndLng = [];
 
+    const allWorkout = this.#workout.forEach(work => {
+      const [lat, lng] = work.coords;
+      latArr.push(lat);
+      lngArr.push(lng);
+    });
+
+    const latArrAverage = latArr.reduce((a, b) => a + b, 0) / latArr.length;
+    const lngArrAverage = lngArr.reduce((a, b) => a + b, 0) / lngArr.length;
+    console.log(latArrAverage);
+    console.log(lngArrAverage);
+    latAndLng.push(latArrAverage);
+    latAndLng.push(lngArrAverage);
+
+    console.log(latAndLng);
+    this.#map.setView(latAndLng, this.#mapZoomLevel, {
+      animate: true,
+      pan: { duration: 1 },
+    });
+  }
   reset() {
     // const workoutElement = e.target.closest('.workout');
     // if (!workoutElement) return;
