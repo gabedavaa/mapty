@@ -311,8 +311,13 @@ class App {
   }
   _seeAllWorkOut(e) {
     e.preventDefault();
+    // if (this.#workout)
+    seeAllWorkOutOnMap.classList.add('hidden');
+
+    // All workouts lat and lng
     const latArr = [];
     const lngArr = [];
+    // Average lat and lng
     const latAndLng = [];
 
     const allWorkout = this.#workout.forEach(work => {
@@ -329,7 +334,7 @@ class App {
     latAndLng.push(lngArrAverage);
 
     console.log(latAndLng);
-    this.#map.setView(latAndLng, this.#mapZoomLevel, {
+    this.#map.setView(latAndLng, 12, {
       animate: true,
       pan: { duration: 1 },
     });
@@ -356,24 +361,14 @@ class App {
     const workout = this.#workout.find(
       work => work.id === workoutElement.dataset.id
     );
-    alert('Are you sure to delete them!');
-    // // form.style.display = 'none';
-    // // this.reset(workout);
-    // // this._hideForm(e);
-    // console.log(workout);
 
-    // // Empty inputs
-    // inputDistance.value =
-    //   inputDuration.value =
-    //   inputCadence.value =
-    //   inputElevation.value =
-    //     '';
-    // form.style.display = 'none';
-    // form.classList.add('hidden');
-    // setTimeout(() => (form.style.display = 'grid'), 1000);
-
-    localStorage.removeItem(`workouts`);
-    location.reload();
+    // Confimation window
+    if (confirm('Are you sure to delete them!')) {
+      localStorage.removeItem(`workouts`);
+      location.reload();
+    } else {
+      console.log('you clicked no');
+    }
   }
 }
 
