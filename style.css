@@ -219,6 +219,17 @@ a:visited {
   border-left: 5px solid var(--color-brand--1);
 }
 
+.deleteall-button {
+  font-size: 18px;
+}
+
 .seebtn-hidden {
-  /* display: none; */
+  width: 50%;
+  margin: 0 auto;
+  height: 50px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

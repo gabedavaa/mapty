@@ -8,6 +8,7 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const seeAllWorkOutOnMap = document.getElementById('see-workout-onmap');
+const seeBtnClass = document.querySelector('.seebtn-hidden');
 
 class workout {
   date = new Date();
@@ -209,6 +210,10 @@ class App {
 
     // Set local storage to all workouts
     this._setLocalStorage();
+
+    //
+    // if (!this._renderWorkOut(workout))
+    //   return seeBtnClass.classList.add('seebtn-hidden');
   }
 
   _renderWorkOutMarker(workout) {
@@ -311,8 +316,8 @@ class App {
   }
   _seeAllWorkOut(e) {
     e.preventDefault();
-    // if (this.#workout)
-    seeAllWorkOutOnMap.classList.add('hidden');
+
+    let zoomIndex = 6;
 
     // All workouts lat and lng
     const latArr = [];
@@ -320,6 +325,7 @@ class App {
     // Average lat and lng
     const latAndLng = [];
 
+    // Getting data
     const allWorkout = this.#workout.forEach(work => {
       const [lat, lng] = work.coords;
       latArr.push(lat);
@@ -328,13 +334,30 @@ class App {
 
     const latArrAverage = latArr.reduce((a, b) => a + b, 0) / latArr.length;
     const lngArrAverage = lngArr.reduce((a, b) => a + b, 0) / lngArr.length;
-    console.log(latArrAverage);
-    console.log(lngArrAverage);
+
     latAndLng.push(latArrAverage);
     latAndLng.push(lngArrAverage);
 
-    console.log(latAndLng);
-    this.#map.setView(latAndLng, 12, {
+    // MAX LAT AND LNG
+    const maxLatArr = Math.max(...latArr);
+    const maxLngArr = Math.max(...lngArr);
+    const difMaxLatAverage = Math.abs(maxLatArr - latAndLng[0]);
+    const difMaxLngAverage = Math.abs(maxLngArr - latAndLng[1]);
+
+    // if difference lat
+    if (difMaxLatAverage >= difMaxLngAverage) {
+      if (difMaxLatAverage > latAndLng[0] * 1.1) {
+        zoomIndex = +(difMaxLatAverage / 50).toFixed(0);
+      }
+    }
+    // if difference lng
+    if (difMaxLngAverage >= difMaxLatAverage) {
+      if (difMaxLngAverage > latAndLng[1] * 1.1) {
+        zoomIndex = +(difMaxLngAverage / 50).toFixed(0);
+      }
+    }
+
+    this.#map.setView(latAndLng, zoomIndex, {
       animate: true,
       pan: { duration: 1 },
     });
