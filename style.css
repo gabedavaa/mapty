@@ -220,15 +220,21 @@ a:visited {
 }
 
 .deleteall-button {
-  font-size: 18px;
+  font-size: 16px;
 }
 
-.seebtn-hidden {
-  width: 50%;
+.btn-delete-see {
+  display: flex;
+  justify-content: space-between;
+}
+
+.seebtn-hidden,
+.deleteall-button {
+  width: 40%;
   margin: 0 auto;
   height: 50px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   margin-top: 10px;
   margin-bottom: 10px;

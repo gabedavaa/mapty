@@ -9,6 +9,7 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const seeAllWorkOutOnMap = document.getElementById('see-workout-onmap');
 const seeBtnClass = document.querySelector('.seebtn-hidden');
+const deleteAllWorkoutBtn = document.getElementById('deleteall-workout');
 
 class workout {
   date = new Date();
@@ -68,10 +69,6 @@ class Cycling extends workout {
   }
 }
 
-// const run1 = new Running([44, 40], 5, 19, 180);
-// const cycling1 = new Cycling([44, 40], 10, 80, 580);
-// console.log(run1, cycling1);
-
 //////////////////////////////////////////////////////////////
 // APPLICATION ARCHITECTURE
 class App {
@@ -81,6 +78,10 @@ class App {
   #workout = [];
 
   constructor() {
+    // delete and see workouts, hiding and disabled
+    seeBtnClass.disabled = true;
+    deleteAllWorkoutBtn.disabled = true;
+
     // Get user's position
     this._getPosition();
 
@@ -91,8 +92,8 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
-    containerWorkouts.addEventListener(
-      'dblclick',
+    deleteAllWorkoutBtn.addEventListener(
+      'click',
       this._deletWorkOut.bind(this)
     );
     seeAllWorkOutOnMap.addEventListener(
@@ -112,6 +113,12 @@ class App {
   }
 
   _loadMap(position) {
+    // See all workout button activate
+    console.log(this.#workout.length);
+    if (this.#workout.length) {
+      seeBtnClass.disabled = false;
+      deleteAllWorkoutBtn.disabled = false;
+    }
     const { latitude } = position.coords;
     const { longitude } = position.coords;
 
@@ -157,6 +164,15 @@ class App {
     // Checking if input is Number
     const validInput = (...inputs) => inputs.every(inp => Number.isFinite(inp));
     e.preventDefault();
+    console.log(containerWorkouts);
+    console.log(this.#workout.length);
+    if (containerWorkouts) {
+      seeBtnClass.disabled = false;
+      deleteAllWorkoutBtn.disabled = false;
+    }
+    // See all workout button activate
+    // seeBtnClass.disabled = false;
+
     // Checking if input Number is positive
     const allPositive = (...inputs) => inputs.every(inp => inp > 0);
 
@@ -378,12 +394,19 @@ class App {
 
   _deletWorkOut(e) {
     e.preventDefault();
+    if (!containerWorkouts) return;
 
-    const workoutElement = e.target.closest('.workout');
-    if (!workoutElement) return;
+    // const workoutElement = e.target.closest('.workout');
+
+    // if (!workoutElement) return;
+    // const workout = this.#workout.find(
+    //   work => work.id === workoutElement.dataset.id
+    // );
+
+    /*if (!this.#workout) return;
     const workout = this.#workout.find(
-      work => work.id === workoutElement.dataset.id
-    );
+      work => work.id === this.#workout.dataset.id
+    );*/
 
     // Confimation window
     if (confirm('Are you sure to delete them!')) {
