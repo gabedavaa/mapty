@@ -10,11 +10,11 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const seeAllWorkOutOnMap = document.getElementById('see-workout-onmap');
 const seeBtnClass = document.querySelector('.seebtn-hidden');
 const deleteAllWorkoutBtn = document.getElementById('deleteall-workout');
+const sortBtn = document.getElementById('sort-btn');
 
 class workout {
   date = new Date();
   id = (Date.now() + '').slice(-10);
-  clicks = 0;
 
   constructor(coords, distance, duration) {
     // this.date = ...
@@ -30,10 +30,6 @@ class workout {
     this.description = `${this.type[0].toUpperCase(0)}${this.type.slice(
       1
     )} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
-  }
-
-  click() {
-    this.clicks++;
   }
 }
 
@@ -81,6 +77,7 @@ class App {
     // delete and see workouts, hiding and disabled
     seeBtnClass.disabled = true;
     deleteAllWorkoutBtn.disabled = true;
+    sortBtn.disabled = true;
 
     // Get user's position
     this._getPosition();
@@ -100,6 +97,8 @@ class App {
       'click',
       this._seeAllWorkOut.bind(this)
     );
+    // NEW
+    sortBtn.addEventListener('click', this._sortBtnByKM.bind(this));
   }
 
   _getPosition() {
@@ -114,10 +113,10 @@ class App {
 
   _loadMap(position) {
     // See all workout button activate
-    console.log(this.#workout.length);
     if (this.#workout.length) {
       seeBtnClass.disabled = false;
       deleteAllWorkoutBtn.disabled = false;
+      sortBtn.disabled = false;
     }
     const { latitude } = position.coords;
     const { longitude } = position.coords;
@@ -164,11 +163,10 @@ class App {
     // Checking if input is Number
     const validInput = (...inputs) => inputs.every(inp => Number.isFinite(inp));
     e.preventDefault();
-    console.log(containerWorkouts);
-    console.log(this.#workout.length);
     if (containerWorkouts) {
       seeBtnClass.disabled = false;
       deleteAllWorkoutBtn.disabled = false;
+      sortBtn.disabled = false;
     }
     // See all workout button activate
     // seeBtnClass.disabled = false;
@@ -311,9 +309,6 @@ class App {
       animate: true,
       pan: { duration: 1 },
     });
-
-    // Using the public interface
-    // workout.click();
   }
 
   _setLocalStorage() {
@@ -332,6 +327,7 @@ class App {
   }
   _seeAllWorkOut(e) {
     e.preventDefault();
+    console.log(this.#workout);
 
     let zoomIndex = 6;
 
@@ -411,10 +407,54 @@ class App {
     // Confimation window
     if (confirm('Are you sure to delete them!')) {
       localStorage.removeItem(`workouts`);
+      localStorage.removeItem(`workoutsSort`);
       location.reload();
     } else {
       console.log('you clicked no');
     }
+  }
+
+  // New sort btn
+  _sortBtnByKM(e) {
+    e.preventDefault();
+    // localStorage.removeItem(`workout`);
+
+    const workoutSortByKM = this.#workout.sort(
+      (a, b) => parseFloat(a.distance) - parseFloat(b.distance)
+    );
+
+    ///////////////
+    console.log(workoutSortByKM);
+    localStorage.setItem('workoutsSort', JSON.stringify(workoutSortByKM));
+
+    const data = JSON.parse(localStorage.getItem('workoutsSort'));
+    if (!data) return;
+
+    workoutSortByKM.forEach(work => {
+      this._renderWorkOut(work);
+      this._renderWorkOutMarker(work);
+      this._renderWorkOutMarker(work);
+    });
+    ///////////////
+
+    // console.log(workoutSortByKM);
+    // this.#workout = workoutSortByKM;
+
+    // this._renderWorkOut(this.#workout);
+    // this.#workout.forEach(work => {
+    //   this._renderWorkOut(work);
+    //   this._renderWorkOutMarker(work);
+    //   this._renderWorkOutMarker(work);
+    // });
+
+    // this._setLocalStorage();
+
+    // this._getLocalStorage();
+
+    // console.log(this.#workout);
+
+    location.reload();
+    console.log(workoutSortByKM);
   }
 }
 
