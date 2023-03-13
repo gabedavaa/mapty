@@ -72,6 +72,7 @@ class App {
   #mapZoomLevel = 17;
   #mapEvent;
   #workout = [];
+  #clicks;
 
   constructor() {
     // delete and see workouts, hiding and disabled
@@ -313,11 +314,14 @@ class App {
 
   _setLocalStorage() {
     localStorage.setItem('workouts', JSON.stringify(this.#workout));
+    localStorage.setItem('workoutsSort', JSON.stringify(this.#workout));
   }
 
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem('workouts'));
-    if (!data) return;
+    const dataSort = JSON.parse(localStorage.getItem('workouts'));
+
+    if (!data || !dataSort) return;
 
     this.#workout = data;
 
@@ -417,44 +421,43 @@ class App {
   // New sort btn
   _sortBtnByKM(e) {
     e.preventDefault();
-    // localStorage.removeItem(`workout`);
+    localStorage.removeItem(`workout`);
 
     const workoutSortByKM = this.#workout.sort(
       (a, b) => parseFloat(a.distance) - parseFloat(b.distance)
     );
 
-    ///////////////
-    console.log(workoutSortByKM);
-    localStorage.setItem('workoutsSort', JSON.stringify(workoutSortByKM));
+    // console.log(workoutSortByKM);
+    this.#workout = workoutSortByKM;
 
-    const data = JSON.parse(localStorage.getItem('workoutsSort'));
-    if (!data) return;
-
-    workoutSortByKM.forEach(work => {
+    this._renderWorkOut(this.#workout);
+    this.#workout.forEach(work => {
       this._renderWorkOut(work);
       this._renderWorkOutMarker(work);
       this._renderWorkOutMarker(work);
     });
-    ///////////////
 
-    // console.log(workoutSortByKM);
-    // this.#workout = workoutSortByKM;
+    this._setLocalStorage();
 
-    // this._renderWorkOut(this.#workout);
-    // this.#workout.forEach(work => {
-    //   this._renderWorkOut(work);
-    //   this._renderWorkOutMarker(work);
-    //   this._renderWorkOutMarker(work);
-    // });
-
-    // this._setLocalStorage();
-
-    // this._getLocalStorage();
-
-    // console.log(this.#workout);
+    this._getLocalStorage();
+    console.log(this.#workout);
+    console.log(this.#clicks);
 
     location.reload();
-    console.log(workoutSortByKM);
+
+    ///////////////
+    /* console.log(workoutSortByKM);
+    localStorage.setItem('workoutsSort', JSON.stringify(workoutSortByKM));
+
+    const data = JSON.parse(localStorage.getItem('workoutsSort'));
+    if (!data) return;
+    workoutSortByKM.forEach(work => {
+      console.log(work);
+      this._renderWorkOut(work);
+      this._renderWorkOutMarker(work);
+      this._renderWorkOutMarker(work);
+    });*/
+    ///////////////
   }
 }
 
